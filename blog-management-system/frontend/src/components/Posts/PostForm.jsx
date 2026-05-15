@@ -43,7 +43,7 @@ const PostForm = ({ initialData, onSubmit, isSubmitting }) => {
           <div>
             <p className="eyebrow">{initialData ? 'Editorial update' : 'New story'}</p>
             <h1>{initialData ? 'Edit Post' : 'Create New Post'}</h1>
-            <p>Craft your story — fill in the details, summary, and body before it goes live.</p>
+            <p>Craft your story. Fill in the details, summary, and body before it goes live.</p>
           </div>
         </div>
 

@@ -85,7 +85,7 @@ const PostList = ({ posts, pagination, onDelete, onFilterChange, searchQuery, on
           <p className="eyebrow">Editorial dashboard</p>
           <h1>Welcome to BlogR</h1>
           <p className="hero-copy">
-            Create, curate, and publish your stories. Your entire content library — one clean workspace.
+            Create, curate, and publish your stories. Your entire content library in one clean workspace.
           </p>
         </div>
         <div className="hero-actions">
