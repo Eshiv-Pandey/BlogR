@@ -3,7 +3,6 @@
 > A full-stack editorial workspace for managing, publishing, and exporting blog posts. Built with React, Node.js, Express, and MongoDB.
 
 **Live Demo:** [blogrfrontend.vercel.app](https://blogrfrontend.vercel.app)  
-**Backend API:** [blog-r-tvm2.vercel.app/api](https://blog-r-tvm2.vercel.app/api)
 
 ---
 
