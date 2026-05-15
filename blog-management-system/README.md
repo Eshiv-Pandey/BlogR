@@ -1,4 +1,4 @@
-# BlogR — Blog Management System Architecture
+# BlogR : Blog Management System Architecture
 
 ## Project Overview
 
