@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { FilePenLine, Save, X } from 'lucide-react';
+import { PenLine, Save, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const PostForm = ({ initialData, onSubmit, isSubmitting }) => {
@@ -38,7 +38,7 @@ const PostForm = ({ initialData, onSubmit, isSubmitting }) => {
       <div className="form-card">
         <div className="form-hero">
           <span className="form-icon">
-            <FilePenLine size={28} />
+            <PenLine size={28} />
           </span>
           <div>
             <p className="eyebrow">{initialData ? 'Editorial update' : 'New story'}</p>
