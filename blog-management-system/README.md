@@ -1,554 +1,310 @@
-# Blog Post Management System
+# BlogR — Blog Management System
 
-A full-stack blog management application built with React (frontend) and Node.js/Express (backend) with MongoDB database.
+> A full-stack editorial workspace for managing, publishing, and exporting blog posts. Built with React, Node.js, Express, and MongoDB.
 
-## 🚀 Features
+**Live Demo:** [blogrfrontend.vercel.app](https://blogrfrontend.vercel.app)  
+**Backend API:** [blog-r-tvm2.vercel.app/api](https://blog-r-tvm2.vercel.app/api)
 
-### Frontend
-- ✅ Responsive design (Mobile & Desktop)
-- ✅ Three main screens: List View, Add/Edit Form, View Details
-- ✅ Advanced search functionality (by title, author, category)
-- ✅ Filter by category and status
-- ✅ Pagination support
-- ✅ Export to CSV functionality
-- ✅ Form validation with React Hook Form
-- ✅ Toast notifications for success/error feedback
-- ✅ Clean component architecture
-- ✅ Modern UI with custom styling
+---
 
-### Backend
-- ✅ RESTful API with Express.js
-- ✅ MongoDB database with Mongoose ODM
-- ✅ CRUD operations for blog posts
-- ✅ Search API (title, author, category)
-- ✅ Pagination support
-- ✅ CSV export functionality
-- ✅ Input validation with express-validator
-- ✅ Comprehensive error handling
-- ✅ CORS enabled
-
-## 📋 Prerequisites
-
-Before you begin, ensure you have the following installed:
-- **Node.js** (v16 or higher) - [Download](https://nodejs.org/)
-- **MongoDB** (v5 or higher) - [Download](https://www.mongodb.com/try/download/community)
-  - OR **MongoDB Atlas** account (recommended) - [Sign up](https://www.mongodb.com/cloud/atlas/register)
-- **Git** - [Download](https://git-scm.com/)
-- **VS Code** (recommended) - [Download](https://code.visualstudio.com/)
-
-## 🛠️ Tech Stack
+## Features
 
 ### Frontend
-- React 18
-- React Router DOM v6
-- React Hook Form
-- Axios
-- React Hot Toast
-- Lucide React (icons)
-- Vite
+- Glassmorphism UI with purple/violet design system and Plus Jakarta Sans typography
+- Listing view with sortable table, real-time search, and category/status filters
+- Add, Edit, and View Detail pages with full form validation
+- Pagination with smart page number display
+- CSV export with active filter support
+- Toast notifications for all user actions
+- Responsive layout for mobile and desktop
+- Custom BlogR favicon and branding
 
 ### Backend
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- Express Validator
-- JSON2CSV
-- CORS
-- Dotenv
+- RESTful API with Express.js
+- MongoDB with Mongoose ODM and text search indexes
+- Full CRUD for blog posts
+- Paginated list and search endpoints
+- CSV export endpoint
+- Input validation with express-validator
+- Centralized error handling middleware
+- CORS configured for all Vercel deployment URLs
 
-## 📦 Installation & Setup
+---
 
-### Option 1: Using MongoDB Atlas (Recommended for Deployment)
+## Tech Stack
 
-#### Step 1: Clone the Repository
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, Vite, React Router v6 |
+| Forms | React Hook Form |
+| HTTP | Axios |
+| Notifications | React Hot Toast |
+| Icons | Lucide React |
+| Styling | Custom CSS (no UI library) |
+| Backend | Node.js, Express.js |
+| Database | MongoDB Atlas, Mongoose |
+| Validation | express-validator |
+| Export | json2csv |
+| Deployment | Vercel (both frontend and backend) |
+
+---
+
+## Prerequisites
+
+- **Node.js** v16 or higher — [nodejs.org](https://nodejs.org/)
+- **MongoDB Atlas** account (free tier is sufficient) — [mongodb.com/atlas](https://www.mongodb.com/cloud/atlas/register)
+- **Git** — [git-scm.com](https://git-scm.com/)
+
+---
+
+## Local Setup
+
+### 1. Clone the repository
+
 ```bash
-git clone <repository-url>
-cd blog-management-system
+git clone https://github.com/Eshiv-Pandey/BlogR.git
+cd BlogR/blog-management-system
 ```
 
-#### Step 2: Setup MongoDB Atlas
-
-1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register) and create a free account
-2. Create a new cluster (Free tier M0 is sufficient)
-3. Click "Connect" on your cluster
-4. Create a database user:
-   - Username: `bloguser` (or your choice)
-   - Password: Create a strong password (save it!)
-5. Choose "Connect your application"
-6. Copy the connection string (it will look like):
-   ```
-   mongodb+srv://bloguser:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
-   ```
-7. Replace `<password>` with your actual password
-8. Add your database name after `.net/`: 
-   ```
-   mongodb+srv://bloguser:yourpassword@cluster0.xxxxx.mongodb.net/blog-management?retryWrites=true&w=majority
-   ```
-
-#### Step 3: Backend Setup
+### 2. Backend setup
 
 ```bash
-# Navigate to backend directory
 cd backend
-
-# Install dependencies
 npm install
-
-# Create .env file
-# On Windows:
-copy .env.example .env
-# On Mac/Linux:
-cp .env.example .env
 ```
 
-Edit the `.env` file:
+Create `backend/.env`:
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://bloguser:yourpassword@cluster0.xxxxx.mongodb.net/blog-management?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/blogr?retryWrites=true&w=majority
 NODE_ENV=development
 ```
 
-**Important**: Replace the MONGODB_URI with your actual MongoDB Atlas connection string!
-
-#### Step 4: Frontend Setup
-
+Start the backend:
 ```bash
-# Navigate to frontend directory (from project root)
-cd ../frontend
-
-# Install dependencies
-npm install
-
-# Create .env file
-# On Windows:
-copy .env.example .env
-# On Mac/Linux:
-cp .env.example .env
+npm run dev
+# Server running on http://localhost:5000
 ```
 
-The `.env` file should contain:
+### 3. Frontend setup
+
+```bash
+cd ../frontend
+npm install
+```
+
+Create `frontend/.env`:
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-### Option 2: Using Local MongoDB
-
-If you have MongoDB installed locally:
-
-#### Backend .env:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/blog-management
-NODE_ENV=development
+Start the frontend:
+```bash
+npm run dev
+# App running on http://localhost:5173
 ```
 
-Make sure MongoDB service is running:
-```bash
-# Windows (run as Administrator)
-net start MongoDB
-
-# Mac (with Homebrew)
-brew services start mongodb-community
-
-# Linux
-sudo systemctl start mongod
-```
-
-## 🚀 Running the Application
-
-### Start Backend Server
+### 4. Seed demo data (optional)
 
 ```bash
-# From backend directory
 cd backend
-npm run dev
+node seed.js
+# Inserts 10 demo posts with real Unsplash thumbnails
 ```
 
-The backend will start on `http://localhost:5000`
+---
 
-You should see:
+## API Reference
+
+### Base URL
 ```
-Server is running on port 5000
-Environment: development
-MongoDB Connected: <your-mongodb-host>
-```
-
-### Start Frontend Development Server
-
-Open a **new terminal** window:
-
-```bash
-# From frontend directory
-cd frontend
-npm run dev
+Local:      http://localhost:5000/api
+Production: https://blog-r-tvm2.vercel.app/api
 ```
 
-The frontend will start on `http://localhost:3000` and open automatically in your browser.
-
-## 🧪 Testing the Application
-
-1. **Homepage** - View all blog posts in a table
-2. **Add Post** - Click "Add Post" button to create a new post
-3. **Search** - Use the search bar to find posts by title, author, or category
-4. **Filters** - Filter posts by category and status
-5. **View Details** - Click the eye icon to view full post details
-6. **Edit Post** - Click the edit icon to modify a post
-7. **Delete Post** - Click the trash icon to delete a post
-8. **Export CSV** - Click "Export CSV" to download posts as CSV file
-9. **Pagination** - Navigate through pages of posts
-
-## 📝 API Endpoints
-
-### Posts
+### Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/posts` | Get all posts (with pagination) |
-| GET | `/api/posts/search` | Search posts |
-| GET | `/api/posts/export` | Export posts to CSV |
-| GET | `/api/posts/:id` | Get single post by ID |
-| POST | `/api/posts` | Create new post |
-| PUT | `/api/posts/:id` | Update post by ID |
-| DELETE | `/api/posts/:id` | Delete post by ID |
+| GET | `/posts` | List posts with pagination and filters |
+| GET | `/posts/search` | Full-text search across posts |
+| GET | `/posts/export` | Download filtered posts as CSV |
+| GET | `/posts/:id` | Get a single post by ID |
+| POST | `/posts` | Create a new post |
+| PUT | `/posts/:id` | Update an existing post |
+| DELETE | `/posts/:id` | Delete a post |
 
 ### Query Parameters
 
-**Pagination:**
-- `page` - Page number (default: 1)
-- `limit` - Items per page (default: 10)
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `page` | number | Page number (default: 1) |
+| `limit` | number | Items per page (default: 10) |
+| `category` | string | Filter by: Technology, Design, Business, Lifestyle, Other |
+| `status` | string | Filter by: Draft, Published |
+| `q` | string | Search query (title, author, category) |
 
-**Filters:**
-- `category` - Filter by category
-- `status` - Filter by status (Draft/Published)
-- `q` - Search query
+### Example Requests
 
-**Example:**
-```
-GET http://localhost:5000/api/posts?page=1&limit=10&category=Technology&status=Published
-GET http://localhost:5000/api/posts/search?q=react&page=1
-GET http://localhost:5000/api/posts/export?category=Technology
-```
+```bash
+# Get page 2 of published Technology posts
+GET /api/posts?page=2&limit=10&category=Technology&status=Published
 
-## 🌐 Environment Variables
+# Search for "react"
+GET /api/posts/search?q=react&page=1
 
-### Backend (.env)
-```env
-PORT=5000
-MONGODB_URI=<your-mongodb-connection-string>
-NODE_ENV=development
+# Export all Design posts as CSV
+GET /api/posts/export?category=Design
 ```
 
-### Frontend (.env)
-```env
-VITE_API_URL=http://localhost:5000/api
+### Post Schema
+
+```json
+{
+  "title":            "string (required, max 200)",
+  "authorName":       "string (required)",
+  "email":            "string (required, valid email)",
+  "category":         "Technology | Design | Business | Lifestyle | Other",
+  "tags":             ["string"],
+  "status":           "Draft | Published",
+  "thumbnailUrl":     "string (optional URL)",
+  "shortDescription": "string (required, max 300)",
+  "content":          "string (required)"
+}
 ```
 
-For production, update `VITE_API_URL` to your deployed backend URL:
-```env
-VITE_API_URL=https://your-backend-url.com/api
-```
+---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-blog-management-system/
+BlogR/blog-management-system/
 ├── backend/
 │   ├── config/
 │   │   └── database.js          # MongoDB connection
 │   ├── models/
-│   │   └── Post.js              # Post schema
+│   │   └── Post.js              # Mongoose schema + text indexes
 │   ├── routes/
-│   │   └── posts.js             # Post routes & controllers
+│   │   └── posts.js             # Routes and controllers
 │   ├── middleware/
-│   │   └── errorHandler.js      # Error handling middleware
+│   │   └── errorHandler.js      # Global error handler
 │   ├── utils/
-│   │   └── csvExport.js         # CSV export utility
-│   ├── .env                      # Environment variables
-│   ├── server.js                 # Main server file
+│   │   └── csvExport.js         # CSV generation utility
+│   ├── seed.js                  # Demo data seeder (10 posts)
+│   ├── server.js                # App entry point
+│   ├── vercel.json              # Vercel serverless config
+│   ├── .env.example
 │   └── package.json
 │
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Layout/
-│   │   │   │   ├── Navbar.jsx
-│   │   │   │   └── Footer.jsx
-│   │   │   ├── Posts/
-│   │   │   │   ├── PostList.jsx
-│   │   │   │   ├── PostForm.jsx
-│   │   │   │   ├── PostView.jsx
-│   │   │   │   ├── SearchBar.jsx
-│   │   │   │   └── Pagination.jsx
-│   │   │   └── Common/
-│   │   │       ├── Loading.jsx
-│   │   │       └── ErrorMessage.jsx
-│   │   ├── pages/
-│   │   │   ├── HomePage.jsx
-│   │   │   ├── AddPostPage.jsx
-│   │   │   ├── EditPostPage.jsx
-│   │   │   └── ViewPostPage.jsx
-│   │   ├── services/
-│   │   │   └── api.js            # API service
-│   │   ├── styles/
-│   │   │   └── global.css        # Global styles
-│   │   ├── App.jsx               # Main App component
-│   │   └── main.jsx              # Entry point
-│   ├── .env                       # Environment variables
-│   ├── package.json
-│   ├── vite.config.js
-│   └── index.html
-│
-└── README.md
+└── frontend/
+    ├── public/
+    │   └── favicon.svg          # BlogR favicon
+    ├── src/
+    │   ├── components/
+    │   │   ├── Layout/
+    │   │   │   ├── Navbar.jsx
+    │   │   │   └── Footer.jsx
+    │   │   ├── Posts/
+    │   │   │   ├── PostList.jsx
+    │   │   │   ├── PostForm.jsx
+    │   │   │   ├── PostView.jsx
+    │   │   │   ├── SearchBar.jsx
+    │   │   │   └── Pagination.jsx
+    │   │   └── Common/
+    │   │       ├── Loading.jsx
+    │   │       └── ErrorMessage.jsx
+    │   ├── pages/
+    │   │   ├── HomePage.jsx
+    │   │   ├── AddPostPage.jsx
+    │   │   ├── EditPostPage.jsx
+    │   │   └── ViewPostPage.jsx
+    │   ├── services/
+    │   │   └── api.js           # Axios instance + API methods
+    │   ├── styles/
+    │   │   └── global.css       # Design system and all styles
+    │   ├── App.jsx
+    │   └── main.jsx
+    ├── index.html
+    ├── vercel.json              # SPA rewrite rules
+    ├── .env.example
+    └── package.json
 ```
 
-## 🚢 Deployment
+---
 
-### Backend Deployment (Render / Railway / Heroku)
+## Environment Variables
 
-#### Using Render (Recommended - Free Tier Available):
+### Backend
 
-1. Create account on [Render](https://render.com/)
-2. Click "New" → "Web Service"
-3. Connect your GitHub repository
-4. Configure:
-   - **Name**: blog-backend
-   - **Environment**: Node
-   - **Build Command**: `cd backend && npm install`
-   - **Start Command**: `cd backend && npm start`
-5. Add Environment Variables:
-   - `MONGODB_URI`: Your MongoDB Atlas connection string
-   - `NODE_ENV`: production
-6. Click "Create Web Service"
-7. Copy your service URL (e.g., `https://blog-backend.onrender.com`)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `MONGODB_URI` | Yes | MongoDB Atlas connection string |
+| `NODE_ENV` | Yes | `development` or `production` |
+| `PORT` | No | Server port (default: 5000) |
+| `FRONTEND_URL` | No | Custom domain for CORS (Vercel URLs allowed automatically) |
 
-#### Using Railway:
+### Frontend
 
-1. Sign up at [Railway](https://railway.app/)
-2. Click "New Project" → "Deploy from GitHub repo"
-3. Select your repository
-4. Add environment variables in the Variables tab
-5. Deploy will start automatically
-6. Copy your service URL
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_API_URL` | Yes | Full backend API URL including `/api` |
 
-#### Using Heroku:
+---
 
+## Deployment (Vercel)
+
+Both services deploy to Vercel as separate projects from the same GitHub repo.
+
+See `DEPLOYMENT_GUIDE.md` for the full step-by-step guide.
+
+**Quick reference:**
+
+| Project | Root Directory | Key Env Var |
+|---------|---------------|-------------|
+| Backend | `blog-management-system/backend` | `MONGODB_URI`, `NODE_ENV=production` |
+| Frontend | `blog-management-system/frontend` | `VITE_API_URL=https://<backend>.vercel.app/api` |
+
+---
+
+## Scripts
+
+### Backend
 ```bash
-# Install Heroku CLI
-# Login to Heroku
-heroku login
-
-# Create new app
-heroku create blog-backend-app
-
-# Set environment variables
-heroku config:set MONGODB_URI="your-mongodb-uri"
-heroku config:set NODE_ENV=production
-
-# Deploy
-git subtree push --prefix backend heroku main
+npm run dev    # Development server with nodemon
+npm start      # Production server
+node seed.js   # Seed database with 10 demo posts
 ```
 
-### Frontend Deployment (Vercel / Netlify)
-
-#### Using Vercel (Recommended):
-
-1. Sign up at [Vercel](https://vercel.com/)
-2. Click "New Project"
-3. Import your GitHub repository
-4. Configure:
-   - **Framework Preset**: Vite
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-5. Add Environment Variable:
-   - `VITE_API_URL`: Your deployed backend URL (e.g., `https://blog-backend.onrender.com/api`)
-6. Click "Deploy"
-7. Your site will be live at `https://your-app.vercel.app`
-
-#### Using Netlify:
-
-1. Sign up at [Netlify](https://www.netlify.com/)
-2. Click "Add new site" → "Import an existing project"
-3. Connect your GitHub repository
-4. Configure:
-   - **Base directory**: `frontend`
-   - **Build command**: `npm run build`
-   - **Publish directory**: `frontend/dist`
-5. Add Environment Variable:
-   - `VITE_API_URL`: Your deployed backend URL
-6. Click "Deploy site"
-
-### Post-Deployment:
-
-1. Update frontend `.env` with production backend URL
-2. Update backend CORS settings if needed (in `server.js`):
-   ```javascript
-   app.use(cors({
-     origin: 'https://your-frontend-url.vercel.app'
-   }));
-   ```
-3. Test all functionality on the live site
-
-## 🐛 Troubleshooting
-
-### Backend Issues:
-
-**MongoDB Connection Error:**
-```
-Error: connect ECONNREFUSED
-```
-- Check if MongoDB is running locally
-- Verify MongoDB Atlas connection string is correct
-- Check if your IP is whitelisted in MongoDB Atlas (Network Access)
-- Ensure password in connection string is URL-encoded
-
-**Port Already in Use:**
-```
-Error: listen EADDRINUSE: address already in use :::5000
-```
-- Change PORT in `.env` file to a different port (e.g., 5001)
-- Or kill the process using port 5000:
-  ```bash
-  # Windows
-  netstat -ano | findstr :5000
-  taskkill /PID <PID> /F
-  
-  # Mac/Linux
-  lsof -ti:5000 | xargs kill -9
-  ```
-
-### Frontend Issues:
-
-**API Connection Error:**
-- Verify backend is running on http://localhost:5000
-- Check `VITE_API_URL` in frontend `.env`
-- Check browser console for CORS errors
-- Ensure backend has CORS enabled
-
-**Module Not Found:**
-```
-Error: Cannot find module 'react-router-dom'
-```
-- Delete `node_modules` and `package-lock.json`
-- Run `npm install` again
-
-### Common Issues:
-
-**Validation Errors:**
-- Check all required fields are filled
-- Verify email format is correct
-- Check category is one of the allowed values
-- Check status is either "Draft" or "Published"
-
-**Images Not Loading:**
-- Verify thumbnail URL is a valid image URL
-- Check if image URL is accessible
-- Image will hide automatically if URL is invalid
-
-## 📊 Sample Data
-
-You can use this sample data to test the application:
-
-**Post 1:**
-- Title: Getting Started with React Hooks
-- Author: Sarah Johnson
-- Email: sarah@example.com
-- Category: Technology
-- Status: Published
-- Tags: react, javascript, hooks
-- Thumbnail: https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800
-- Short Description: Learn how to use React Hooks to build modern, functional components.
-- Content: React Hooks revolutionized how we write React components...
-
-**Post 2:**
-- Title: Modern UI Design Principles
-- Author: Michael Chen
-- Email: michael@example.com
-- Category: Design
-- Status: Published
-- Tags: design, ui, ux
-- Thumbnail: https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800
-- Short Description: Explore the fundamental principles of modern user interface design.
-- Content: Good UI design is invisible. It enables users to accomplish their goals...
-
-## 👨‍💻 Development
-
-### Available Scripts:
-
-**Backend:**
+### Frontend
 ```bash
-npm start      # Start production server
-npm run dev    # Start development server with nodemon
+npm run dev     # Development server (localhost:5173)
+npm run build   # Production build
+npm run preview # Preview production build locally
 ```
 
-**Frontend:**
-```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run preview  # Preview production build
-```
+---
 
-### Code Style:
+## Troubleshooting
 
-- Use meaningful variable and function names
-- Keep components small and focused
-- Follow React best practices
-- Use async/await for asynchronous operations
-- Handle errors gracefully with try-catch
-- Add comments for complex logic
+**CORS error in browser console**
+- Confirm the backend has redeployed after any env var changes
+- Check `VITE_API_URL` ends with `/api` (not just the domain)
+- All `*.vercel.app` origins are allowed automatically
 
-## 📄 License
+**MongoDB connection refused**
+- Go to MongoDB Atlas > Network Access > Add `0.0.0.0/0`
+- Verify the `MONGODB_URI` has the correct password (URL-encode special characters)
 
-This project is created for assessment purposes.
+**Build fails on Vercel (`is not exported by`)**
+- A Lucide React icon name may not exist in your installed version
+- Check `lucide-react` version in `package.json` and verify icon names at [lucide.dev](https://lucide.dev)
 
-## 🤝 Support
+**Port 5000 already in use locally**
+- Set `PORT=5001` in `backend/.env`
+- Update `VITE_API_URL` in `frontend/.env` accordingly
 
-If you encounter any issues:
-1. Check the Troubleshooting section
-2. Verify all environment variables are set correctly
-3. Check the browser console and server logs for errors
-4. Ensure all dependencies are installed correctly
+---
 
-## ✅ Checklist
+## License
 
-- [x] CRUD API for blog posts
-- [x] Pagination support
-- [x] Search functionality
-- [x] Export to CSV
-- [x] MongoDB integration
-- [x] Responsive design
-- [x] Form validation
-- [x] Error handling
-- [x] Component-based architecture
-- [x] Clean file structure
-- [x] Success/failure notifications
-- [x] Multiple routing
-- [x] No inline styles
-- [x] Good naming conventions
-- [x] Connected to real API
-
-## 🎯 Assignment Requirements Met
-
-✅ Backend:
-- CRUD API with pagination
-- Search API (title, author, category)
-- Export to CSV API
-- MongoDB with Mongoose
-
-✅ Frontend:
-- Responsive design (Mobile/Desktop)
-- Field validation
-- 3 screens (List, Add/Edit, View)
-- Multiple routing
-- Component-based architecture
-- Consistent file structure
-- Error handling with notifications
-- React with Vite
-- Connected to real API
-- No inline styles
-- Good naming conventions
-
-## 📞 Contact
-
-For questions or support, please refer to the troubleshooting section or check the application logs.
+MIT
