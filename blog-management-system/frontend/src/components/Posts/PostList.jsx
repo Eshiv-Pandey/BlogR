@@ -5,10 +5,11 @@ import {
   FileText,
   Filter,
   Layers3,
+  Plus,
   Trash2,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { postAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 import Pagination from './Pagination';
@@ -82,9 +83,9 @@ const PostList = ({ posts, pagination, onDelete, onFilterChange, searchQuery, on
       <section className="page-hero">
         <div>
           <p className="eyebrow">Editorial dashboard</p>
-          <h1>Blog Post Manager</h1>
+          <h1>Welcome to BlogR</h1>
           <p className="hero-copy">
-            Plan, refine, publish, and export your content library from one focused workspace.
+            Create, curate, and publish your stories. Your entire content library — one clean workspace.
           </p>
         </div>
         <div className="hero-actions">
@@ -93,12 +94,16 @@ const PostList = ({ posts, pagination, onDelete, onFilterChange, searchQuery, on
             onClick={() => setShowFilters((value) => !value)}
           >
             <Filter size={16} />
-            Filters
+            {showFilters ? 'Hide Filters' : 'Filters'}
           </button>
-          <button className="btn btn-success" onClick={handleExport}>
+          <button className="btn btn-secondary" onClick={handleExport}>
             <Download size={16} />
             Export CSV
           </button>
+          <Link to="/add" className="btn btn-primary">
+            <Plus size={16} />
+            New Post
+          </Link>
         </div>
       </section>
 
