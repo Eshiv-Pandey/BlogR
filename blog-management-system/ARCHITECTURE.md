@@ -2,292 +2,236 @@
 
 ## Overview
 
-BlogR is a full-stack blog management platform built on the MERN stack (MongoDB, Express, React, Node.js). The frontend and backend are deployed independently on Vercel, communicating over HTTP through a RESTful JSON API.
+BlogR is a full-stack blog management platform built on the MERN stack (MongoDB, Express, React, Node.js). The frontend and backend are deployed independently on Vercel and communicate through a RESTful JSON API.
 
 ---
 
-## High-Level Architecture
+# High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                         CLIENT BROWSER                       │
-│                                                             │
-│   ┌─────────────────────────────────────────────────────┐  │
-│   │              React SPA (Vite)                       │  │
-│   │                                                     │  │
-│   │  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │  │
-│   │  │ Navbar   │  │ Footer   │  │  React Router v6  │  │  │
-│   │  └──────────┘  └──────────┘  └──────────────────┘  │  │
-│   │                                                     │  │
-│   │  Pages: HomePage / AddPostPage / EditPostPage /     │  │
-│   │         ViewPostPage                                │  │
-│   │                                                     │  │
-│   │  Components: PostList / PostForm / PostView /       │  │
-│   │              SearchBar / Pagination / Loading /     │  │
-│   │              ErrorMessage                           │  │
-│   │                                                     │  │
-│   │  Services: api.js (Axios instance)                  │  │
-│   └──────────────────────────┬──────────────────────────┘  │
-│                              │ HTTPS / JSON                  │
-└──────────────────────────────┼──────────────────────────────┘
-                               │
-              ┌────────────────▼────────────────┐
-              │      Vercel Edge Network         │
-              │   (CDN + Serverless Routing)     │
-              └────────────────┬────────────────┘
-                               │
-        ┌──────────────────────┼──────────────────────┐
-        │                      │                       │
-        ▼                      ▼                       │
-┌───────────────┐   ┌─────────────────────┐           │
-│  Frontend     │   │  Backend API         │           │
-│  Vercel CDN   │   │  Vercel Serverless   │           │
-│               │   │                     │           │
-│  /dist (SPA)  │   │  server.js          │           │
-│  React bundle │   │  Express app        │           │
-│  Static files │   │  @vercel/node       │           │
-└───────────────┘   └──────────┬──────────┘           │
-                               │                       │
-                               ▼                       │
-                   ┌─────────────────────┐             │
-                   │   MongoDB Atlas      │             │
-                   │   (Cloud Database)   │             │
-                   │                     │             │
-                   │   Collection: posts  │             │
-                   │   Text indexes on    │             │
-                   │   title/author/cat   │             │
-                   └─────────────────────┘             │
+```mermaid
+flowchart TD
+
+    A[Client Browser]
+    B[React SPA - Vite]
+    C[React Router v6]
+    D[Reusable Components]
+    E[Axios API Layer]
+
+    F[Vercel Edge Network]
+    G[Frontend Deployment<br/>Static SPA]
+    H[Backend Deployment<br/>Express Serverless API]
+
+    I[MongoDB Atlas]
+
+    A --> B
+    B --> C
+    B --> D
+    D --> E
+
+    E -->|HTTPS / JSON| F
+
+    F --> G
+    F --> H
+
+    H -->|Mongoose Queries| I
 ```
 
 ---
 
-## Component Architecture (Frontend)
+# Frontend Component Architecture
 
-```
-App.jsx
-├── Navbar.jsx              (sticky, glassmorphism)
-├── Routes
-│   ├── / → HomePage.jsx
-│   │       └── PostList.jsx
-│   │           ├── SearchBar.jsx
-│   │           ├── Filter dropdowns
-│   │           ├── Stats grid (4 cards)
-│   │           ├── Table of posts
-│   │           └── Pagination.jsx
-│   │
-│   ├── /add → AddPostPage.jsx
-│   │           └── PostForm.jsx  (create mode)
-│   │
-│   ├── /edit/:id → EditPostPage.jsx
-│   │                └── PostForm.jsx  (edit mode)
-│   │
-│   └── /view/:id → ViewPostPage.jsx
-│                    └── PostView.jsx
-│
-├── Footer.jsx
-└── Toaster (react-hot-toast)
+```mermaid
+graph TD
 
-Shared:
-  Loading.jsx        (multi-ring spinner with label)
-  ErrorMessage.jsx   (error card with optional retry)
-```
+    A[App.jsx]
 
----
+    A --> B[Navbar.jsx]
+    A --> C[Footer.jsx]
+    A --> D[React Router]
 
-## Data Flow
+    D --> E[HomePage.jsx]
+    D --> F[AddPostPage.jsx]
+    D --> G[EditPostPage.jsx]
+    D --> H[ViewPostPage.jsx]
 
-### Read (GET posts)
+    E --> I[PostList.jsx]
+    I --> J[SearchBar.jsx]
+    I --> K[Pagination.jsx]
+    I --> L[Stats Cards]
+    I --> M[Posts Table]
 
-```
-User opens HomePage
-      │
-      ▼
-HomePage.jsx calls fetchPosts()
-      │
-      ▼
-api.js → GET /api/posts?page=1&limit=10
-      │
-      ▼
-Express router → posts.js getAllPosts()
-      │
-      ▼
-Mongoose: Post.find().skip().limit()
-      │
-      ▼
-MongoDB Atlas returns documents
-      │
-      ▼
-Response: { success, data: [...], pagination: {...} }
-      │
-      ▼
-PostList.jsx renders table + stat cards
-```
+    F --> N[PostForm.jsx Create Mode]
+    G --> O[PostForm.jsx Edit Mode]
 
-### Write (POST / PUT)
+    H --> P[PostView.jsx]
 
-```
-User fills PostForm and submits
-      │
-      ▼
-React Hook Form validates fields
-      │
-      ▼ (validation passes)
-api.js → POST /api/posts  (or PUT /api/posts/:id)
-      │
-      ▼
-express-validator checks server-side rules
-      │
-      ▼
-Mongoose saves to MongoDB Atlas
-      │
-      ▼
-201 Created / 200 OK response
-      │
-      ▼
-toast.success() + navigate('/')
-```
-
-### Error Flow
-
-```
-Any API call fails
-      │
-      ▼
-Axios interceptor catches error
-      │
-      ▼
-Normalises message from response.data.message
-      │
-      ▼
-Throws new Error(message)
-      │
-      ▼
-catch block in page component:
-  - setError(err.message)     → renders ErrorMessage.jsx
-  - toast.error(err.message)  → shows toast
+    A --> Q[react-hot-toast]
+    A --> R[Loading.jsx]
+    A --> S[ErrorMessage.jsx]
 ```
 
 ---
 
-## Backend Architecture
+# Data Flow
 
-```
-server.js  (entry point)
-│
-├── dotenv.config()           Load env vars
-├── connectDB()               MongoDB connection
-│
-├── CORS middleware            Allow *.vercel.app + localhost
-├── express.json()            Parse JSON bodies
-├── express.urlencoded()      Parse form data
-│
-├── GET /                     Health check
-├── /api/posts → posts.js     All post routes
-│   ├── GET    /              getAllPosts
-│   ├── GET    /search        searchPosts
-│   ├── GET    /export        exportToCSV
-│   ├── GET    /:id           getPostById
-│   ├── POST   /              createPost
-│   ├── PUT    /:id           updatePost
-│   └── DELETE /:id           deletePost
-│
-├── 404 handler
-└── errorHandler middleware    Centralised error responses
+## Read Flow (GET Posts)
+
+```mermaid
+sequenceDiagram
+
+    participant U as User
+    participant F as React Frontend
+    participant A as Axios API
+    participant B as Express Backend
+    participant D as MongoDB Atlas
+
+    U->>F: Open Home Page
+    F->>A: fetchPosts()
+    A->>B: GET /api/posts
+    B->>D: Post.find().skip().limit()
+    D-->>B: Return Documents
+    B-->>A: JSON Response
+    A-->>F: Posts + Pagination
+    F-->>U: Render Table + Stats
 ```
 
 ---
 
-## Database Schema
+## Write Flow (Create / Update Post)
 
-**Collection:** `posts`
+```mermaid
+sequenceDiagram
 
+    participant U as User
+    participant F as PostForm.jsx
+    participant A as Axios API
+    participant B as Express Backend
+    participant D as MongoDB Atlas
+
+    U->>F: Submit Form
+    F->>F: React Hook Form Validation
+    F->>A: POST / PUT Request
+    A->>B: Send JSON Payload
+    B->>B: express-validator Validation
+    B->>D: Save / Update Document
+    D-->>B: Success
+    B-->>A: 201 / 200 Response
+    A-->>F: Success Response
+    F-->>U: Toast + Redirect
 ```
-Field             Type        Constraints
-─────────────────────────────────────────────────────────
-_id               ObjectId    Auto-generated
-title             String      Required, max 200 chars
-authorName        String      Required
-email             String      Required, valid email format
-category          String      Enum: Technology | Design |
-                              Business | Lifestyle | Other
-tags              [String]    Default: []
-status            String      Enum: Draft | Published
-                              Default: Draft
-thumbnailUrl      String      Optional URL
-shortDescription  String      Required, max 300 chars
-content           String      Required
-createdAt         Date        Auto (timestamps: true)
-updatedAt         Date        Auto (timestamps: true)
+
+---
+
+## Error Handling Flow
+
+```mermaid
+flowchart TD
+
+    A[API Request Fails]
+    B[Axios Interceptor]
+    C[Extract Error Message]
+    D[Throw New Error]
+    E[Page Catch Block]
+    F[Render ErrorMessage.jsx]
+    G[Display toast.error]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    E --> G
 ```
 
-**Indexes:**
+---
+
+---
+
+# Database Schema
+
+## Collection: `posts`
+
+```mermaid
+erDiagram
+
+    POSTS {
+        ObjectId _id
+        String title
+        String authorName
+        String email
+        String category
+        String[] tags
+        String status
+        String thumbnailUrl
+        String shortDescription
+        String content
+        Date createdAt
+        Date updatedAt
+    }
+```
+
+### Field Constraints
+
+| Field | Type | Constraints |
+|---|---|---|
+| title | String | Required, max 200 chars |
+| authorName | String | Required |
+| email | String | Required, valid email |
+| category | String | Enum based |
+| tags | Array[String] | Optional |
+| status | String | Draft / Published |
+| shortDescription | String | Required, max 300 chars |
+| content | String | Required |
+
+### Indexes
+
 - Default `_id` index
-- Compound text index on `title`, `authorName`, `category` (powers `/search` endpoint)
+- Compound text index on:
+  - `title`
+  - `authorName`
+  - `category`
 
 ---
 
-## CORS Policy
+# CORS Policy
 
-The backend uses a dynamic CORS allowlist:
+```mermaid
+flowchart LR
 
-| Origin | Allowed |
-|--------|---------|
-| `http://localhost:5173` | Yes (local dev) |
-| `http://localhost:3000` | Yes (legacy local dev) |
-| `https://*.vercel.app` | Yes (all Vercel deployments via regex) |
-| `FRONTEND_URL` env var | Yes (custom domains, comma-separated) |
-| All other origins | Blocked |
+    A[Incoming Request]
 
-This means all Vercel preview URLs are allowed automatically without manual configuration.
+    A --> B{Origin Allowed?}
 
----
-
-## Vercel Deployment Model
-
-### Frontend (Static SPA)
-
-```
-vercel.json:
-  rewrites: [{ source: "/(.*)", destination: "/index.html" }]
-
-Effect: All URL paths return index.html, allowing React Router
-        to handle client-side navigation.
-```
-
-### Backend (Serverless Functions)
-
-```
-vercel.json:
-  builds: [{ src: "server.js", use: "@vercel/node" }]
-  routes: [{ src: "/(.*)", dest: "server.js" }]
-
-Effect: Every HTTP request is handled by server.js running as
-        a serverless function. Cold starts apply (~200-800ms
-        on first request after inactivity).
+    B -->|localhost| C[Allow]
+    B -->|vercel.app| C
+    B -->|FRONTEND_URL| C
+    B -->|Unknown Origin| D[Block Request]
 ```
 
 ---
 
-## Security Considerations
+---
 
-| Area | Approach |
-|------|----------|
-| Input validation | express-validator on all write endpoints |
-| CORS | Explicit allowlist, blocks unknown origins |
-| Sensitive data | `.env` never committed (`.gitignore`), `.env.example` provided |
-| Database | MongoDB Atlas network access can be restricted to specific IPs in production |
-| Error messages | Server errors return generic messages, not stack traces, in production |
+# Security Considerations
+
+| Area | Implementation |
+|---|---|
+| Input Validation | express-validator |
+| CORS | Explicit allowlist |
+| Sensitive Data | `.env` ignored via `.gitignore` |
+| Database Security | MongoDB Atlas IP restrictions |
+| Error Handling | Generic production error messages |
 
 ---
 
-## Limitations and Future Improvements
+# Future Improvements
 
-| Area | Current | Potential Improvement |
-|------|---------|----------------------|
-| Auth | None | JWT auth + user accounts |
-| Image upload | URL input only | Direct file upload to Cloudinary/S3 |
-| Rich text | Plain textarea | Markdown or WYSIWYG editor |
-| Cold starts | Present (serverless) | Keep-alive pings or migrate to Railway |
-| Search | MongoDB text index | Algolia or Meilisearch for relevance |
-| Testing | None | Jest + React Testing Library |
-| Rate limiting | None | express-rate-limit middleware |
+| Area | Current | Future Improvement |
+|---|---|---|
+| Authentication | None | JWT + User Accounts |
+| Image Upload | URL only | Cloudinary / S3 |
+| Rich Text Editor | Plain textarea | Markdown / WYSIWYG |
+| Search | MongoDB Text Index | Algolia / Meilisearch |
+| Testing | None | Jest + RTL |
+| Rate Limiting | None | express-rate-limit |
+| Cold Starts | Present | Railway / Keep-alive |
